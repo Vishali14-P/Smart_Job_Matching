@@ -1,5 +1,6 @@
 import chromadb
 from sentence_transformers import SentenceTransformer
+from ranking import calculate_similarity, calculate_match_scores
 
 
 def create_collection():
@@ -18,10 +19,11 @@ def search_jobs(collection, model, resume_text, top_k=5):
 
     results = collection.query(
         query_embeddings=[resume_embedding.tolist()],
-        n_results=top_k
+        n_results=top_k,
+        include=["metadatas", "distances", "embeddings"]
     )
 
-    return results
+    return results, resume_embedding
 
 
 if __name__ == "__main__":
@@ -36,19 +38,30 @@ if __name__ == "__main__":
     and machine learning.
     """
 
-    results = search_jobs(
+    results, resume_embedding = search_jobs(
         collection,
         model,
         resume_text,
         top_k=5
     )
 
+    job_embeddings = results["embeddings"][0]
+
+    similarities = calculate_similarity(
+        resume_embedding,
+        job_embeddings
+    )
+
+    scores = calculate_match_scores(similarities)
+
     print("\nTop matching jobs:")
 
     for i in range(5):
+
         print("\nRank:", i + 1)
         print("Job:", results["metadatas"][0][i]["job_title"])
         print("Company:", results["metadatas"][0][i]["company"])
         print("Location:", results["metadatas"][0][i]["location"])
         print("Experience:", results["metadatas"][0][i]["experience"])
-        print("Distance:", results["distances"][0][i])
+        print("Similarity:", round(float(similarities[i]), 4))
+        print("Match Score:", round(float(scores[i]), 2), "%")
