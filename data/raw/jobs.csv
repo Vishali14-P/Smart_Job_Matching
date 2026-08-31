@@ -1,0 +1,21 @@
+job_id,job_title,company,skills,description,location,experience
+1,Python Developer,TechSoft,"Python, SQL, Django, REST API","Develop backend applications using Python and Django. Work with databases and REST APIs.",Chennai,Fresher
+2,Java Developer,CodeWorks,"Java, Spring Boot, SQL, REST API","Build enterprise applications using Java and Spring Boot. Work with SQL databases and APIs.",Bangalore,1-2 years
+3,Data Analyst,DataPro,"Python, SQL, Excel, Power BI","Analyze business data using Python and SQL. Create reports and dashboards using Excel and Power BI.",Chennai,Fresher
+4,Frontend Developer,WebTech,"HTML, CSS, JavaScript, React","Develop responsive web applications using HTML, CSS, JavaScript and React.",Bangalore,Fresher
+5,Machine Learning Engineer,AI Labs,"Python, Machine Learning, SQL, Scikit-learn","Develop machine learning models using Python and Scikit-learn. Prepare data and evaluate models.",Chennai,1-2 years
+6,Data Scientist,InsightAI,"Python, Machine Learning, Pandas, SQL","Analyze large datasets and build machine learning models using Python and Pandas.",Hyderabad,1-2 years
+7,Backend Developer,CloudApps,"Python, FastAPI, PostgreSQL, Docker","Develop scalable backend APIs using Python and FastAPI. Work with PostgreSQL and Docker.",Chennai,1-2 years
+8,Full Stack Developer,DevWorld,"JavaScript, React, Node.js, MongoDB","Build full-stack web applications using React, Node.js and MongoDB.",Bangalore,1-2 years
+9,Software Engineer,InnovateTech,"Python, Java, SQL, Git","Develop and maintain software applications. Collaborate with development teams using Git.",Chennai,Fresher
+10,AI Engineer,FutureAI,"Python, NLP, Machine Learning, Transformers","Develop AI applications using Python, NLP and machine learning techniques.",Hyderabad,1-2 years
+11,Cloud Engineer,CloudTech,"AWS, Linux, Docker, Python","Deploy and maintain cloud applications using AWS, Linux and Docker.",Bangalore,1-2 years
+12,DevOps Engineer,DeployPro,"Docker, Kubernetes, AWS, Linux","Automate application deployment and infrastructure using Docker, Kubernetes and AWS.",Chennai,2-3 years
+13,SQL Developer,DataSystems,"SQL, MySQL, PostgreSQL, Python","Develop database solutions using SQL and relational database technologies.",Chennai,Fresher
+14,Python Data Engineer,DataCloud,"Python, SQL, ETL, AWS","Build data pipelines using Python and SQL and work with cloud data infrastructure.",Bangalore,1-2 years
+15,Junior Web Developer,WebStart,"HTML, CSS, JavaScript, Git","Create and maintain websites using HTML, CSS and JavaScript.",Chennai,Fresher
+16,Research Assistant AI,ResearchLab,"Python, Machine Learning, NLP","Assist with AI research projects involving machine learning and natural language processing.",Chennai,Fresher
+17,Mobile App Developer,AppWorks,"Flutter, Dart, Firebase","Develop cross-platform mobile applications using Flutter and Firebase.",Bangalore,Fresher
+18,Software Testing Engineer,QualityTech,"Python, Selenium, SQL, Testing","Create automated tests using Python and Selenium and validate software quality.",Chennai,Fresher
+19,Data Engineer,BigDataCorp,"Python, SQL, Spark, AWS","Build and maintain data processing pipelines using Python, SQL, Spark and AWS.",Hyderabad,1-2 years
+20,Junior Java Developer,SoftLabs,"Java, SQL, Spring Boot, Git","Develop Java applications and APIs using Spring Boot and SQL.",Chennai,Fresher
