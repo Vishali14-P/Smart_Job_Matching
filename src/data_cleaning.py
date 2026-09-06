@@ -1,96 +1,233 @@
 import pandas as pd
+import re
 
+
+# -----------------------------
+# Load Data
+# -----------------------------
 
 def load_data(file_path):
-    jobs = pd.read_csv(file_path)
-    return jobs
+
+    df = pd.read_csv(file_path)
+
+    return df
 
 
-def remove_duplicates(jobs):
-    jobs = jobs.drop_duplicates()
-    jobs = jobs.drop_duplicates(subset=["job_id"])
-    return jobs
+# -----------------------------
+# Remove Duplicates
+# -----------------------------
 
-def handle_missing_values(jobs):
+def remove_duplicates(df):
+
+    df = df.drop_duplicates()
+
+    return df
+
+
+# -----------------------------
+# Handle Missing Values
+# -----------------------------
+
+def handle_missing_values(df):
+
     text_columns = [
-        "job_title",
-        "company",
-        "skills",
-        "description",
-        "location",
-        "experience"
+        "Job Title",
+        "Company Name",
+        "Location",
+        "Experience",
+        "Job Description",
+        "Skills"
     ]
 
     for column in text_columns:
-        jobs[column] = jobs[column].fillna("Not specified")
 
-    return jobs
+        df[column] = df[column].fillna("Not specified")
 
-def clean_text(jobs):
-    text_columns = [
-        "job_title",
-        "company",
-        "skills",
-        "description",
-        "location",
-        "experience"
-    ]
+    return df
 
-    for column in text_columns:
-        jobs[column] = (
-            jobs[column]
-            .astype(str)
-            .str.strip()
-            .str.replace(r"\s+", " ", regex=True)
-        )
 
-    return jobs
+# -----------------------------
+# Clean Text
+# -----------------------------
 
-def create_combined_text(jobs):
-    jobs["combined_text"] = (
-        jobs["job_title"] + ". "
-        + "Skills: " + jobs["skills"] + ". "
-        + "Description: " + jobs["description"]
+def clean_text(text):
+
+    text = str(text)
+
+    text = text.lower()
+
+    text = re.sub(
+        r"\s+",
+        " ",
+        text
     )
 
-    return jobs
+    text = text.strip()
 
-def save_data(jobs, file_path):
-    jobs.to_csv(file_path, index=False)
+    return text
+
+
+# -----------------------------
+# Create Project Columns
+# -----------------------------
+
+def create_project_columns(df):
+
+    df["job_id"] = range(
+        1,
+        len(df) + 1
+    )
+
+    df["job_title"] = df["Job Title"].apply(
+        clean_text
+    )
+
+    df["company"] = df["Company Name"].apply(
+        clean_text
+    )
+
+    df["location"] = df["Location"].apply(
+        clean_text
+    )
+
+    df["experience"] = df["Experience"].apply(
+        clean_text
+    )
+
+    df["description"] = df["Job Description"].apply(
+        clean_text
+    )
+
+    df["skills"] = df["Skills"].apply(
+        clean_text
+    )
+
+    return df
+
+
+# -----------------------------
+# Create Combined Text
+# -----------------------------
+
+def create_combined_text(df):
+
+    df["combined_text"] = (
+
+        df["job_title"]
+        + ". Skills: "
+        + df["skills"]
+        + ". Description: "
+        + df["description"]
+
+    )
+
+    return df
+
+
+# -----------------------------
+# Save Data
+# -----------------------------
+
+def save_data(
+    df,
+    output_path
+):
+
+    columns = [
+        "job_id",
+        "job_title",
+        "company",
+        "skills",
+        "description",
+        "location",
+        "experience",
+        "combined_text"
+    ]
+
+    df[columns].to_csv(
+        output_path,
+        index=False
+    )
+
+
+# -----------------------------
+# Main
+# -----------------------------
 
 if __name__ == "__main__":
-    jobs = load_data("data/raw/jobs.csv")
 
-    print(jobs.head())
+    input_file = (
+        "data/raw/Data Science_Jobs.csv"
+    )
 
-    print("\nDuplicate rows:", jobs.duplicated().sum())
-    print("Duplicate job IDs:", jobs["job_id"].duplicated().sum())
+    output_file = (
+        "data/processed/cleaned_jobs.csv"
+    )
 
-    jobs = remove_duplicates(jobs)
+
+    print("Loading dataset...")
+
+    jobs = load_data(
+        input_file
+    )
+
+    print(
+        "Original rows:",
+        len(jobs)
+    )
 
 
-    print("\nShape after removing duplicates:", jobs.shape)
+    jobs = remove_duplicates(
+        jobs
+    )
 
-    jobs = handle_missing_values(jobs)
+    print(
+        "After removing duplicates:",
+        len(jobs)
+    )
 
-    print("\nMissing values after cleaning:")
 
-    print(jobs.isnull().sum())
+    jobs = handle_missing_values(
+        jobs
+    )
 
-    jobs = clean_text(jobs)
 
-    print("\nData after text cleaning:")
+    jobs = create_project_columns(
+        jobs
+    )
 
-    print(jobs.head())
 
-    jobs = create_combined_text(jobs)
+    jobs = create_combined_text(
+        jobs
+    )
 
-    print("\nCombined text:")
 
-    print(jobs[["job_title", "combined_text"]].head())
+    save_data(
+        jobs,
+        output_file
+    )
 
-    print("\nCleaned data saved successfully.")
 
-    save_data(jobs, "data/processed/cleaned_jobs.csv")
+    print(
+        "Cleaned dataset saved successfully."
+    )
 
-    print("\nCleaned data saved successfully.")
+    print(
+        "Final rows:",
+        len(jobs)
+    )
+
+    print(
+        "Final columns:",
+        jobs[
+            [
+                "job_id",
+                "job_title",
+                "company",
+                "skills",
+                "description",
+                "location",
+                "experience"
+            ]
+        ].columns.tolist()
+    )
