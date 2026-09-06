@@ -1,4 +1,5 @@
 import streamlit as st
+import pandas as pd
 from pypdf import PdfReader
 import chromadb
 from sentence_transformers import SentenceTransformer
@@ -216,8 +217,51 @@ def load_model():
 
 @st.cache_resource
 def create_collection():
+    """Create/load the ChromaDB job collection for local and cloud deployment."""
     client = chromadb.PersistentClient(path="chroma_db")
-    return client.get_or_create_collection(name="jobs")
+
+    data_path = "data/processed/cleaned_jobs.csv"
+    jobs = pd.read_csv(data_path)
+
+    # Reuse the existing database when it already contains the full dataset.
+    collection = client.get_or_create_collection(name="jobs")
+    if collection.count() == len(jobs):
+        return collection
+
+    # If the database is missing or incomplete, rebuild it automatically.
+    try:
+        client.delete_collection(name="jobs")
+    except Exception:
+        pass
+
+    collection = client.get_or_create_collection(name="jobs")
+
+    model = load_model()
+    job_texts = jobs["combined_text"].fillna("").astype(str).tolist()
+    embeddings = model.encode(
+        job_texts,
+        batch_size=64,
+        show_progress_bar=False
+    )
+
+    ids = jobs["job_id"].astype(str).tolist()
+    documents = job_texts
+    metadatas = jobs[
+        ["job_title", "company", "location", "experience", "skills"]
+    ].fillna("Not specified").astype(str).to_dict(orient="records")
+
+    # Chroma has a maximum batch size, so add the records in batches.
+    batch_size = 5000
+    for start in range(0, len(ids), batch_size):
+        end = start + batch_size
+        collection.add(
+            ids=ids[start:end],
+            embeddings=embeddings[start:end].tolist(),
+            documents=documents[start:end],
+            metadatas=metadatas[start:end]
+        )
+
+    return collection
 
 
 # =========================================================
